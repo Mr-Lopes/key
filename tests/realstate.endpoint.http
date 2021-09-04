@@ -1,0 +1,30 @@
+### Creates a new real state
+POST https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/new
+content-type: application/json
+
+{
+    "description" : "10th property",
+    "isActive": true
+}
+
+### Updates a given real state guid
+PUT https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/11
+content-type: application/json
+
+{
+    "description" : "very nice property",
+    "status" : "Pending"
+}
+### Deletes <actually disables> a given real state gid
+DELETE https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/9
+
+### Views a given real state guid
+GET https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/2
+
+### Lists realstates based upon the passed query criteria
+POST https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstates
+content-type: application/json
+
+{
+    
+}
