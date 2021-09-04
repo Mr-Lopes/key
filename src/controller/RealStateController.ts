@@ -1,92 +1,87 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import DBFactory  from "../db";
 import "reflect-metadata";
 import RealState from '../db/entity/RealState';
 import RealStateInterface from '../db/entity/RealState';
 
-export default class RealStateController {
+import {
+    Body,
+    Delete,
+    Get,
+    Post,
+    Put,
+    Route,
+  } from "tsoa";
 
+@Route("/api/v1/realstate/")
+export default class RealStateController {
+    
     /**
      * Handles a new Real State creation
      * @param req.body
      */
-    public static create(req: Request, res: Response): void{
-        new DBFactory().getConnection().then(async conn => {
-           
-            let newRealState = new RealState(req.body);
+    @Post()
+    static create(@Body() params: RealStateInterface) {
+        return new Promise<RealState>((resolve, reject) => {
+            new DBFactory().getConnection().then(async conn => {
             
-            await newRealState.save().catch(ex => {
-                return res.status(500).json({
-                    message: "Opps! Something went wrong...",
-                    details: ex.message,
-                  });
-            });
+                let newRealState = new RealState(params);
+                await newRealState.save().catch(ex => {
+                    throw new Error('Oops! Something went wrong when adding your real state');
+                });
 
-            return res.status(200).json({
-                message: "Created Successfuly!",
-                id: newRealState.id
-              });
-        
-        }).catch(ex => {
-            return res.status(500).json({
-                message: "Opps! Something went wrong...",
-                details: ex.message,
-              });
-        });      
+                resolve(newRealState);
+       
+            }).catch(reject);
+        });
     }
 
     /**
      * Handles Real State update
      * @param req.body
      */
-    public static update(req: Request, res: Response): void{
-        
-        new DBFactory().getConnection().then(async conn => {
-               
-            const id = Number(req.params.id);
-            const [foundRealState] = id? await RealState.findByIds([id]) : [];
+     @Put("/{id}") 
+     static update(id:number, @Body() params: RealStateInterface) {
+         return new Promise<RealState>((resolve, reject) => {
+             new DBFactory().getConnection().then(async conn => {
+                
+                 const [foundRealState] = id ? await RealState.findByIds([id]) : [];
 
-            if (foundRealState && foundRealState.id == id) {
-                foundRealState.mutate(req.body);
-                await foundRealState.save();
+                 if (foundRealState?.id == id) {
+                     foundRealState.mutate(params);
+                     await foundRealState.save().catch(ex => {
+                         throw new Error('Oops! Something went wrong when updating your real state');
+                     });
+                 }
 
-                return res.status(200).json({
-                    message: "Updated Successfuly!",
-                });
-
-            } else {
-                return res.status(404).json({
-                    message: "Real State not found. Check your ID",
-                });
-            }
-            
-        });
-
+                 resolve(foundRealState);
+                
+             }).catch(reject);
+         });
     }
 
     /**
      * Handles Real State update
      * @param req.params.id
      */
-    public static delete(req: Request, res: Response): void{
-        new DBFactory().getConnection().then(async conn => {
+    @Delete("/{id}")
+    static delete(id : number) {
+        return new Promise<Boolean>((resolve, reject) => {
+            new DBFactory().getConnection().then(async conn => {
                
-            const id = Number(req.params.id);
-            const [foundRealState] = id? await RealState.findByIds([id]) : [];
+                const [foundRealState] = id ? await RealState.findByIds([id]) : [];
 
-            if (foundRealState && foundRealState.id == id) {
-                await foundRealState.remove();
+                if (foundRealState?.id == id) {
+    
+                    await foundRealState.remove().catch(ex => {
+                        throw new Error('Oops! Something went wrong when deleting your real state');
+                    });
 
-                return res.status(200).json({
-                    message: "Deleted Successfuly!",
-                });
-
-            } else {
-                return res.status(404).json({
-                    message: "Real State not found. Check your ID",
-                });
-            }
-            
+                    resolve(true);
+                } else
+                    resolve(false);
+             
+            }).catch(reject);
         });
     }
 
@@ -94,12 +89,27 @@ export default class RealStateController {
      * Views an existing Real State
      * @param req.params.id
      */
-    public static find(req: Request, res: Response): void{
-        
-        new DBFactory().getConnection().then(async conn => {
-            return res.status(200).json({
-                result: await RealState.findByIds([Number(req.params.id)]),
-            });
+    @Get("/{id}")
+    static find(id : number){
+        return new Promise<RealState>((resolve, reject) => {
+            new DBFactory().getConnection().then(async conn => {
+
+                const [foundRealState] = id ?
+                    await RealState.findByIds([id]).catch(ex => {
+                        throw new Error('Oops! Something went wrong when viewing your real state');
+                    }) : [];
+
+                if (foundRealState?.id == id) {
+                    // Increments the number of views/hits
+                    foundRealState.numberOfViews += 1;
+                    await foundRealState.save().catch(ex => {
+                        // Ignores the error in order to let the user view the property
+                    });;
+                }
+
+                resolve(foundRealState);
+
+            }).catch(reject);
         });
 
     }
@@ -108,12 +118,18 @@ export default class RealStateController {
      * Views ALL Real State that matches the params criteria
      * @param req.body
      */
-    public static findBy(req: Request, res: Response): void{
-        
-        new DBFactory().getConnection().then(async conn => {
-            return res.status(200).json({
-                results: await RealState.find({where: req.body as RealStateInterface}),
-            });
+    @Post("/realstates/")
+    static findBy(@Body() params : RealStateInterface) {
+        return new Promise<RealState[]>((resolve, reject) => {
+            new DBFactory().getConnection().then(async conn => {
+                
+                resolve(
+                    await RealState.find({ where: params }).catch(ex => {
+                        throw new Error('Oops! Something went wrong when searching for real states');
+                    })
+                );
+
+            }).catch(reject);
         });
     }
 }

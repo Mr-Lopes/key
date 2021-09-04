@@ -3,23 +3,23 @@ POST https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate
 content-type: application/json
 
 {
-    "description" : "10th property",
-    "isActive": true
+    "description" : "12nd property",
+    "isActive": true,
+    "state": "Sao Paulo"
 }
 
 ### Updates a given real state guid
-PUT https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/11
+PUT https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/15
 content-type: application/json
 
 {
-    "description" : "very nice property",
-    "status" : "Pending"
+    "zipcode" : "123456"
 }
 ### Deletes <actually disables> a given real state gid
-DELETE https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/9
+DELETE https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/10
 
 ### Views a given real state guid
-GET https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/2
+GET https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstate/11
 
 ### Lists realstates based upon the passed query criteria
 POST https://swgqczppmf.execute-api.us-east-1.amazonaws.com/dev/api/v1/realstates

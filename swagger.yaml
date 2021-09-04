@@ -1,0 +1,207 @@
+basePath: /v1
+consumes:
+    - application/json
+definitions:
+    RealStateInterface:
+        properties:
+            id:
+                type: number
+                format: double
+            description:
+                type: string
+            address:
+                type: string
+            number:
+                type: string
+            city:
+                type: string
+            state:
+                type: string
+            country:
+                type: string
+            zipcode:
+                type: number
+                format: double
+            lat:
+                type: number
+                format: double
+            lng:
+                type: number
+                format: double
+            bedrooms:
+                type: number
+                format: double
+            bathrooms:
+                type: number
+                format: double
+            parking:
+                type: number
+                format: double
+            propertytype:
+                type: string
+            homesize:
+                type: number
+                format: double
+            lotsize:
+                type: number
+                format: double
+            yearBuilt:
+                type: number
+                format: double
+            status:
+                type: string
+            isActive:
+                type: boolean
+            numberOfViews:
+                type: number
+                format: double
+            createdAt:
+                type: string
+                format: date-time
+            updatedAt:
+                type: string
+                format: date-time
+        required:
+            - id
+            - description
+            - address
+            - number
+            - city
+            - state
+            - country
+            - zipcode
+            - lat
+            - lng
+            - bedrooms
+            - bathrooms
+            - parking
+            - propertytype
+            - homesize
+            - lotsize
+            - yearBuilt
+            - status
+            - isActive
+            - numberOfViews
+            - createdAt
+            - updatedAt
+        type: object
+        additionalProperties: false
+    Boolean:
+        properties: {}
+        type: object
+        additionalProperties: false
+info:
+    title: keycash-backend-pedro-lopes
+    version: 1.0.0
+    description: 'Backend challenge for Keycash'
+    license:
+        name: MIT
+    contact:
+        name: MrLou
+paths:
+    /api/v1/realstate:
+        post:
+            operationId: Create
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+            description: 'Handles a new Real State creation'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: params
+                    required: true
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+    '/api/v1/realstate/{id}':
+        put:
+            operationId: Update
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+            description: 'Handles Real State update'
+            security: []
+            parameters:
+                -
+                    in: path
+                    name: id
+                    required: true
+                    format: double
+                    type: number
+                -
+                    in: body
+                    name: params
+                    required: true
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+        delete:
+            operationId: Delete
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/Boolean'
+            description: 'Handles Real State update'
+            security: []
+            parameters:
+                -
+                    in: path
+                    name: id
+                    required: true
+                    format: double
+                    type: number
+        get:
+            operationId: Find
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+            description: 'Views an existing Real State'
+            security: []
+            parameters:
+                -
+                    in: path
+                    name: id
+                    required: true
+                    format: double
+                    type: number
+    /api/v1/realstate/realstates:
+        post:
+            operationId: FindBy
+            produces:
+                - application/json
+            responses:
+                '200':
+                    description: Ok
+                    schema:
+                        items:
+                            $ref: '#/definitions/RealStateInterface'
+                        type: array
+            description: 'Views ALL Real State that matches the params criteria'
+            security: []
+            parameters:
+                -
+                    in: body
+                    name: params
+                    required: true
+                    schema:
+                        $ref: '#/definitions/RealStateInterface'
+produces:
+    - application/json
+swagger: '2.0'
+securityDefinitions: {}
+host: 'localhost:3000'

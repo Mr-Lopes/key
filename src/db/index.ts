@@ -37,9 +37,14 @@ export default class DB {
 
         // TO:DO : Rearrange the folowwing statement 
         // in order to ensure that there's a database created
-        connection.query(`CREATE DATABASE IF NOT EXISTS ${connectionOptions.database}`);
+        if(connection?.query)
+          connection.query(`CREATE DATABASE IF NOT EXISTS ${connectionOptions.database}`);
       }
-  
+      // In case something went wrong when accessing the DB,
+      // lets throw an error and let middleware handle it
+      if (!connection)
+        throw new Error('Oops! Something went wrong when accessing the DB');
+
       return connection;
     }
   }

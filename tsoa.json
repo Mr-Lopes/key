@@ -1,0 +1,22 @@
+{
+    "entryFile": "src/app.ts",
+    "noImplicitAdditionalProperties": "throw-on-extras",
+    "controllerPathGlobs": ["src/**/*Controller.ts"],
+    "swagger": {
+      "outputDirectory": "./",
+      "entryFile": "src/app.ts",
+      "host": "localhost:3000",
+      "basePath": "/v1"
+    },
+    "spec": {
+      "outputDirectory": "./",
+      "host": "localhost:3000",
+      "basePath": "/v1/",
+      "yaml": true
+    },
+    "routes": {
+      "basePath": "/v1",
+      "routesDir": "src/routes",
+      "middleware": "express"
+    }
+  }
